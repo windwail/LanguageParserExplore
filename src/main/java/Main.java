@@ -1,6 +1,7 @@
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by icetsuk on 09.01.17.
@@ -20,6 +21,10 @@ public class Main {
         }
 
         public TypeEnum type;
+
+        public boolean isOperator() {
+            return (type != TypeEnum.LITERAL && type != TypeEnum.VARIABLE);
+        }
     }
 
     public static class Node {
@@ -111,6 +116,15 @@ public class Main {
     }
 
 
+    public static List<Node> extractArgument(int pos, List<Node> list) {
+
+        if(list.get(pos).text.equals("(")) {
+
+        }
+
+        return null;
+    }
+
     public static void main(String[] args) {
 
         String code = "bool success=!(person.setSalary((5*6)/3)&true)+some";
@@ -127,7 +141,22 @@ public class Main {
         System.out.println(code);
         // }
 
+        int pos = 0;
+        int watchdog = 0;
 
+        while(watchdog < 1000) {
+
+
+            Node n = list.get(pos);
+
+            // operand operator
+            if(n.info.isOperator() && n.info.type == OperandInfo.TypeEnum.UNARY) {
+
+            }
+
+
+            watchdog++;
+        }
 
 
     }
