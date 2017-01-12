@@ -1,8 +1,4 @@
-import javaslang.collection.Array;
-
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Created by icetsuk on 10.01.17.
@@ -16,7 +12,6 @@ public class BracketsMagic {
 
         StringBuilder sb = new StringBuilder();
 
-        List<Array> parts = new ArrayList<>();
 
         int index = 1;
         int watchdog = 1000;

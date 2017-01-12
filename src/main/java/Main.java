@@ -1,163 +1,217 @@
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
+
+import java.util.*;
 
 /**
  * Created by icetsuk on 09.01.17.
  */
 public class Main {
 
-    private static class OperandInfo {
-        public String token;
+    public static final String NONE = "Ёж";
 
-        public OperandInfo(TypeEnum type, String token) {
-            this.type = type;
-            this.token = token;
-        }
+    public enum TypeEnum {
+        UNARY,
+        BINARY,
+        OPEN_BRACKET,
+        CLOSE_BRAKET,
+        TYPE,
+        VARIABLE,
+        LITERAL,
+        STRING,
+        NUMBER,
+        IF,
+        FOR,
+        WHILE,
+        EOL,
+        BLANK
+    }
 
-        public enum TypeEnum {
-            UNARY, BINARY, OPEN_BRACKET, CLOSE_BRAKET, TYPE, VARIABLE, LITERAL
-        }
-
+    public static class Token {
         public TypeEnum type;
+        public String text;
 
+        public Token(String text, TypeEnum type) {
+            this.type = type;
+            this.text = text;
+        }
         public boolean isOperator() {
             return (type != TypeEnum.LITERAL && type != TypeEnum.VARIABLE);
         }
     }
 
-    public static class Node {
-        public boolean operator;
-        public String text;
-        public Node child1;
-        public Node child2;
-        public OperandInfo info;
-
-        public Node(OperandInfo info, String text) {
-            this.info = info;
-            this.text = text;
-        }
-    }
-
-    static  HashMap<String,OperandInfo> operands = new HashMap<>();
-
-    static HashSet<String> types = new HashSet<>();
+    static HashMap<String, TypeEnum> operands = new HashMap<>();
 
     static {
-        operands.put("!", new OperandInfo(OperandInfo.TypeEnum.UNARY,"!"));
-        operands.put("=", new OperandInfo(OperandInfo.TypeEnum.BINARY,"="));
-        operands.put("*", new OperandInfo(OperandInfo.TypeEnum.BINARY,"*"));
-        operands.put("/", new OperandInfo(OperandInfo.TypeEnum.BINARY,"/"));
-        operands.put("+", new OperandInfo(OperandInfo.TypeEnum.BINARY,"+"));
-        operands.put("-", new OperandInfo(OperandInfo.TypeEnum.BINARY,"-"));
-        operands.put("&", new OperandInfo(OperandInfo.TypeEnum.BINARY,"&"));
-        operands.put(".", new OperandInfo(OperandInfo.TypeEnum.BINARY,"."));
-        operands.put("(", new OperandInfo(OperandInfo.TypeEnum.OPEN_BRACKET,"("));
-        operands.put(")", new OperandInfo(OperandInfo.TypeEnum.CLOSE_BRAKET,")"));
-        operands.put("{", new OperandInfo(OperandInfo.TypeEnum.OPEN_BRACKET,"{"));
-        operands.put("}", new OperandInfo(OperandInfo.TypeEnum.CLOSE_BRAKET,"}"));
+        operands.put("!", TypeEnum.UNARY);
+        operands.put("=", TypeEnum.BINARY);
+        operands.put("*", TypeEnum.BINARY);
+        operands.put("/", TypeEnum.BINARY);
+        operands.put("+", TypeEnum.BINARY);
+        operands.put("-", TypeEnum.BINARY);
+        operands.put("&", TypeEnum.BINARY);
+        operands.put(".", TypeEnum.BINARY);
+        operands.put("(", TypeEnum.OPEN_BRACKET);
+        operands.put(")", TypeEnum.CLOSE_BRAKET);
+        operands.put("{", TypeEnum.OPEN_BRACKET);
+        operands.put("}", TypeEnum.CLOSE_BRAKET);
+        operands.put(";", TypeEnum.EOL);
+        operands.put(" ", TypeEnum.BLANK);
 
-        operands.put("bool", new OperandInfo(OperandInfo.TypeEnum.TYPE,"bool"));
-        operands.put("int", new OperandInfo(OperandInfo.TypeEnum.TYPE,"int"));
-        operands.put("string", new OperandInfo(OperandInfo.TypeEnum.TYPE,"string"));
-
+        operands.put("bool", TypeEnum.TYPE);
+        operands.put("int", TypeEnum.TYPE);
+        operands.put("string", TypeEnum.TYPE);
     }
 
 
-    public static LinkedList<Node> parse(String code) {
+    public static class NJNode {
 
-        LinkedList<Node> nlist = new LinkedList<>();
-        StringBuilder sb = new StringBuilder();
-        int index = -1;
-        for(int i=0; i < code.length(); i++) {
+        private final String input;
+        private List<NJNode> children;
+        private NJNode parent;
 
-            char c = code.charAt(i);
+        public NJNode(String input) {
+            this.input = input;
+        }
 
-            if(Character.isAlphabetic(c) || Character.isDigit(c) || c=='"') {
+        private Integer pointer = -1;
+
+        private int watchdog = 1000;
+
+        public void watchdog() {
+            if (--watchdog <= 0) throw new RuntimeException("Watchdog error!");
+        }
+
+        /**
+         *  Выризаем строку до следующего символа с продвижением указателя.
+         */
+        public String findTilSymbolWithShift(char wantedChar) {
+            StringBuilder sb = new StringBuilder();
+
+            while(pointer<input.length()) {
+                char c = input.charAt(pointer);
+
+                pointer++;
+
+                if(c == wantedChar) {
+                    return sb.toString();
+                }
+
                 sb.append(c);
-                if(i == code.length()-1) {
-                    // last token
-                    if(operands.containsKey(sb.toString())) {
-                        nlist.add(new Node(operands.get(sb.toString()), sb.toString()));
+            }
+
+            throw new RuntimeException("Cant find symbol while parsing: "+wantedChar);
+        }
+
+        /**
+         *  Получаем следующий по пути следования токен.
+         */
+        public Token nextToken() {
+
+            StringBuilder sb = new StringBuilder();
+
+            boolean alphabetic = false;
+            boolean numeric = false;
+
+            while (true) {
+                watchdog();
+
+                pointer++;
+
+                // End of line.
+                char c;
+                if(pointer >= input.length()) {
+                    c = ';';
+                } else {
+                    c = input.charAt(pointer);
+                }
+
+                // Строка - считываем все до конца и выходим.
+                if(c == '"') {
+                    return new Token(findTilSymbolWithShift('"'), TypeEnum.STRING);
+                }
+
+                // Если символ или цифра - значит читаем дальше.
+                if (Character.isAlphabetic(c)) {
+                    sb.append(c);
+                    continue;
+                }
+
+                // Если символ или цифра - значит читаем дальше.
+                if (Character.isDigit(c) || (c=='.' && numeric)) {
+                    sb.append(c);
+                    numeric = true;
+                    continue;
+                }
+
+                // Если попали сюда - значит получили что-то странно (не строку, не число, не переменную)
+                if (sb.length() > 0) {
+
+                    // Пробел нас не интересует в следующих итерациях.
+                    if(c == ' ') {
+                        pointer++;
+                    }
+
+                    // Является ли то, что мы получили ключевым словом\оператором
+                    if (operands.containsKey(sb.toString())) {
+                        return new Token(sb.toString(), operands.get(sb.toString()));
                     } else {
-                        nlist.add(new Node(new OperandInfo(OperandInfo.TypeEnum.LITERAL, sb.toString()), sb.toString()));
+                        // Если нет, то значит это число либо строка.
+                        if(numeric) {
+                            return new Token(sb.toString(), TypeEnum.NUMBER);
+                        } else {
+                            return new Token(sb.toString(), TypeEnum.STRING);
+                        }
                     }
                 }
-                continue;
-            }
 
-            if(sb.length()>0) {
-                if(operands.containsKey(sb.toString())) {
-                    nlist.add(new Node(operands.get(sb.toString()), sb.toString()));
-                } else {
-                    nlist.add(new Node(new OperandInfo(OperandInfo.TypeEnum.LITERAL, sb.toString()), sb.toString()));
+                // Если попали сюда - получается какой-то не алфабетны символ - значит оператор.
+                if (operands.containsKey(c + "")) {
+                    return new Token(c + "", operands.get(c + ""));
                 }
 
-                sb = new StringBuilder();
-                index = i;
-            }
-
-            if (operands.containsKey(c + "")) {
-                nlist.add(new Node(operands.get(c + ""), c + ""));
-            } else {
-                if (c != ' ') {
-                    throw new RuntimeException("Unknown symbol: " + c);
-                }
+                throw new RuntimeException("Unknown symbol: "+c);
             }
         }
 
-        for(Node n: nlist) {
-            System.out.println(n.info.token + ":" + n.info.type);
+        public void parseBuild() {
+
+            /*
+                Общие правила:
+                - если начинается с числа/переменной - ищем следующий за ним оператор,
+                    действуем в соответствии с оператором (бъем на ноды)
+                - если начинается с унарной операции смотрим аргумент операции.
+                - если начинается с символьной строки и далее "(" - вызов функции.
+
+                1. Если это терминальное выражение, то это:
+                    а) [- | +] число
+                    б) переменная
+                2. В начале каждого выражения должно идти:
+                    a) some - символьное выражение
+                        *:
+                            someFunc(arg,arg,arg);
+                            some = 3;
+            */
         }
-
-
-        return nlist;
     }
 
 
-    public static List<Node> extractArgument(int pos, List<Node> list) {
-
-        if(list.get(pos).text.equals("(")) {
-
-        }
-
-        return null;
-    }
 
     public static void main(String[] args) {
 
-        String code = "bool success=!(person.setSalary((5*6)/3)&true)+some";
-        String code2 = "int x = person.address.index + (3*4*3+1)";
+        String code = "s=\"o\"=a";
+        String code2 = "int x=person.address.index+(3*4*3+1)";
 
-        LinkedList<Node> list = parse(code);
+        NJNode n = new NJNode(code);
+        Token tk;
 
-        //test {
-        StringBuilder sb = new StringBuilder();
-        for(Node n: list) {
-            sb.append(n.text);
-        }
-        System.out.println(sb.toString());
-        System.out.println(code);
-        // }
-
-        int pos = 0;
-        int watchdog = 0;
-
-        while(watchdog < 1000) {
-
-
-            Node n = list.get(pos);
-
-            // operand operator
-            if(n.info.isOperator() && n.info.type == OperandInfo.TypeEnum.UNARY) {
-
-            }
-
-
-            watchdog++;
+        for(int i=0; i < 10; i++) {
+            System.out.println(n.nextToken().text);
         }
 
+        //while( true) {
+           // n.watchdog();
+            tk = n.nextToken();
+           // if(tk.type == TypeEnum.EOL) { break; };
+        //}
 
     }
 }
