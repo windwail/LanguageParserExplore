@@ -45,6 +45,10 @@ public class Main {
     static {
         operands.put("!", TypeEnum.UNARY);
         operands.put("=", TypeEnum.BINARY);
+        operands.put("==", TypeEnum.BINARY);
+        operands.put("!=", TypeEnum.BINARY);
+        operands.put(">=", TypeEnum.BINARY);
+        operands.put("<=", TypeEnum.BINARY);
         operands.put("*", TypeEnum.BINARY);
         operands.put("/", TypeEnum.BINARY);
         operands.put("+", TypeEnum.BINARY);
@@ -86,7 +90,7 @@ public class Main {
         /**
          *  Выризаем строку до следующего символа с продвижением указателя.
          */
-        public String findTilSymbolWithShift(char wantedChar) {
+        public String findTillSymbolWithShift(char wantedChar) {
             StringBuilder sb = new StringBuilder();
             char c = input.charAt(pointer);
             pointer++;
@@ -94,19 +98,54 @@ public class Main {
 
             while(pointer<input.length()) {
                 c = input.charAt(pointer);
-
                 sb.append(c);
-
                 if(c == wantedChar) {
                     return sb.toString();
-                } else {
+                }
+                pointer++;
+            }
+
+            throw new RuntimeException("Cant find symbol while parsing: "+wantedChar);
+        }
+
+        /**
+         *  Выризаем строку до следующего символа с продвижением указателя.
+         */
+        public String findTillNextBracket(String brackets) {
+            LinkedList<Character> stack = new LinkedList<>();
+
+            char opening = brackets.charAt(0);
+            char closing = brackets.charAt(1);
+
+            StringBuilder sb = new StringBuilder();
+            char c = input.charAt(pointer);
+
+            pointer++;
+            //sb.append(c);
+            stack.add(c);
+
+            while(!stack.isEmpty() && pointer < input.length()) {
+                c = input.charAt(pointer);
+                if(c == opening) {
+                    stack.push(c);
+                }
+                if(c == closing) {
+                    stack.pop();
+                }
+
+                // Add only if it is not last closing bracket.
+                if(!stack.isEmpty()) {
+                    sb.append(c);
                     pointer++;
                 }
 
             }
 
-            throw new RuntimeException("Cant find symbol while parsing: "+wantedChar);
+            return sb.toString();
+
         }
+
+
 
         /**
          *  Получаем следующий по пути следования токен.
@@ -133,12 +172,14 @@ public class Main {
 
                 // Строка - считываем все до конца и выходим.
                 if(c == '"') {
-                    return new Token(findTilSymbolWithShift('"'), TypeEnum.STRING);
+                    return new Token(findTillSymbolWithShift('"'), TypeEnum.STRING);
                 }
 
                 // Строка - считываем все до конца и выходим.
                 if(c == '(') {
-                    return new Token(findTilSymbolWithShift(')'), TypeEnum.SUBTOKEN);
+                    String sub = findTillNextBracket("()");
+                    //System.out.println("find sub:"+sub);
+                    return new Token(sub, TypeEnum.SUBTOKEN);
                 }
 
                 // Если символ или цифра - значит читаем дальше.
@@ -155,11 +196,12 @@ public class Main {
                 }
 
                 // Если попали сюда - значит получили что-то странно (не строку, не число, не переменную)
-                if (sb.length() > 0) {
+                if (sb.length() >= 1) {
 
-                    // Пробел нас не интересует в следующих итерациях.
-                    if(c == ' ') {
-                        pointer++;
+                    // Символ оказался терминальным для переменной
+                    // Считаем его еще раз.
+                    if(c != ' ') {
+                        pointer--;
                     }
 
                     // Является ли то, что мы получили ключевым словом\оператором
@@ -172,6 +214,17 @@ public class Main {
                         } else {
                             return new Token(sb.toString(), TypeEnum.STRING);
                         }
+                    }
+                }
+
+                //Проверяем является ли он двусимволным оператором
+                if(pointer+2 <= input.length()) {
+                    String op = input.substring(pointer,pointer+2);
+
+                    if(operands.containsKey(op)) {
+                        //System.out.println("found op: " + op);
+                        pointer ++;
+                        return new Token(op, operands.get(op));
                     }
                 }
 
@@ -206,25 +259,59 @@ public class Main {
     }
 
 
+    public static void test() {
+        NJNode n;
 
-    public static void main(String[] args) {
+        String ops = "a==b<=c>=d";
+        n = new NJNode(ops);
+        assert (n.nextToken().text.equals("a"));
+        assert (n.nextToken().text.equals("=="));
+        assert (n.nextToken().text.equals("b"));
+        assert (n.nextToken().text.equals("<="));
+        assert (n.nextToken().text.equals("c"));
+        assert (n.nextToken().text.equals(">="));
+        assert (n.nextToken().text.equals("d"));
+        assert (n.nextToken().type == TypeEnum.EOL);
+
+        String brackets = "(((1)(2))((3)(4)))";
+        n = new NJNode(brackets);
+        assert (n.nextToken().text.equals("((1)(2))((3)(4))"));
+
 
         String code = "x=(\"comon\")";
+        n = new NJNode(code);
+        assert (n.nextToken().text.equals("x"));
+        assert (n.nextToken().text.equals("="));
+        assert (n.nextToken().text.equals("\"comon\""));
+        assert (n.nextToken().type == TypeEnum.EOL);
+
         String code2 = "int x=person.address.index+(3*4*3+1)";
-        String code3 = "(o),(o),";
+        n = new NJNode(code2);
+        assert (n.nextToken().text.equals("int"));
+        assert (n.nextToken().text.equals("x"));
+        assert (n.nextToken().text.equals("="));
+        assert (n.nextToken().text.equals("person"));
+        assert (n.nextToken().text.equals("."));
+        assert (n.nextToken().text.equals("address"));
+        assert (n.nextToken().text.equals("."));
+        assert (n.nextToken().text.equals("index"));
+        assert (n.nextToken().text.equals("+"));
+        assert (n.nextToken().text.equals("3*4*3+1"));
+        assert (n.nextToken().type == TypeEnum.EOL);
 
-        NJNode n = new NJNode(code);
-        Token tk;
+        String code3 = "(o),(o),()";
+        n = new NJNode(code3);
+        assert (n.nextToken().text.equals("o"));
+        assert (n.nextToken().text.equals(","));
+        assert (n.nextToken().text.equals("o"));
+        assert (n.nextToken().text.equals(","));
+        assert (n.nextToken().text.equals(""));
+        assert (n.nextToken().type == TypeEnum.EOL);
+    }
 
-        for(int i=0; i < 10; i++) {
-            System.out.println(n.nextToken().text);
-        }
 
-        //while( true) {
-           // n.watchdog();
-            tk = n.nextToken();
-           // if(tk.type == TypeEnum.EOL) { break; };
-        //}
+    public static void main(String[] args) {
+        test();
 
     }
 }
