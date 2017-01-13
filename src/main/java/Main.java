@@ -21,8 +21,10 @@ public class Main {
         IF,
         FOR,
         WHILE,
-        EOL,
-        BLANK
+        EOL, // конец строки
+        BLANK,
+        SUBTOKEN, // в скобках
+        COMMA // запятая
     }
 
     public static class Token {
@@ -55,6 +57,7 @@ public class Main {
         operands.put("}", TypeEnum.CLOSE_BRAKET);
         operands.put(";", TypeEnum.EOL);
         operands.put(" ", TypeEnum.BLANK);
+        operands.put(",", TypeEnum.COMMA);
 
         operands.put("bool", TypeEnum.TYPE);
         operands.put("int", TypeEnum.TYPE);
@@ -85,17 +88,21 @@ public class Main {
          */
         public String findTilSymbolWithShift(char wantedChar) {
             StringBuilder sb = new StringBuilder();
+            char c = input.charAt(pointer);
+            pointer++;
+            sb.append(c);
 
             while(pointer<input.length()) {
-                char c = input.charAt(pointer);
+                c = input.charAt(pointer);
 
-                pointer++;
+                sb.append(c);
 
                 if(c == wantedChar) {
                     return sb.toString();
+                } else {
+                    pointer++;
                 }
 
-                sb.append(c);
             }
 
             throw new RuntimeException("Cant find symbol while parsing: "+wantedChar);
@@ -127,6 +134,11 @@ public class Main {
                 // Строка - считываем все до конца и выходим.
                 if(c == '"') {
                     return new Token(findTilSymbolWithShift('"'), TypeEnum.STRING);
+                }
+
+                // Строка - считываем все до конца и выходим.
+                if(c == '(') {
+                    return new Token(findTilSymbolWithShift(')'), TypeEnum.SUBTOKEN);
                 }
 
                 // Если символ или цифра - значит читаем дальше.
@@ -197,8 +209,9 @@ public class Main {
 
     public static void main(String[] args) {
 
-        String code = "s=\"o\"=a";
+        String code = "x=(\"comon\")";
         String code2 = "int x=person.address.index+(3*4*3+1)";
+        String code3 = "(o),(o),";
 
         NJNode n = new NJNode(code);
         Token tk;
