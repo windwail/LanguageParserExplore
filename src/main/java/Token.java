@@ -1,6 +1,11 @@
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Created by icetsuk on 13.01.17.
  */
+@Getter
+@Setter
 public class Token {
     public TokenType type;
     public String text;

@@ -28,6 +28,7 @@ public class OperatorService {
         operators.put(UNKNOWN, new HashSet<>());
 
         build("=", TokenType.BINARY, 1);
+        build(",", TokenType.COMMA, 1, OperatorComma.class);
         build("+=", TokenType.BINARY, 1);
         build("-=", TokenType.BINARY, 1);
         build("*=", TokenType.BINARY, 1);
@@ -68,20 +69,18 @@ public class OperatorService {
         build("!", TokenType.UNARY, 13); // Unary minus
         build("~", TokenType.BINARY, 13); // Unary minus
 
-        build("", TokenType.BINARY, 14);
-
-        build(".", TokenType.BINARY, 15);
+        build(".", TokenType.DOT, 15, OperatorDot.class);
 
         build("(", TokenType.OPEN_BRACKET);
         build(")", TokenType.OPEN_BRACKET);
 
         build(";", TokenType.EOL);
         build(" ", TokenType.BLANK);
-        build(",", TokenType.COMMA);
 
-        build("bool", TokenType.TYPE);
-        build("int", TokenType.TYPE);
-        build("string", TokenType.TYPE);
+
+        build("bool", TokenType.TYPE, OperatorVar.class);
+        build("int", TokenType.TYPE, OperatorVar.class);
+        build("string", TokenType.TYPE, OperatorVar.class);
 
         build(TokenType.CALL, OperatorCall.class);
         build(TokenType.CALLARGUMENTS, OperatorArguments.class);
@@ -91,12 +90,17 @@ public class OperatorService {
         build(UUID.randomUUID().toString(), type, UNKNOWN);
     }
 
+
     public void build(TokenType type, Class<? extends Operator> clazz) {
         build(UUID.randomUUID().toString(), type, UNKNOWN, clazz);
     }
 
     public void build(String text, TokenType type) {
         build(text, type, UNKNOWN, Operator.class);
+    }
+
+    public void build(String text, TokenType type, Class<? extends Operator> clazz) {
+        build(text, type, UNKNOWN, clazz);
     }
 
     public void build(String text, TokenType type, Integer level) {
@@ -164,7 +168,7 @@ public class OperatorService {
             }
         }
 
-        return null;
+        return result;
     }
 
     public static OperatorService instance() {

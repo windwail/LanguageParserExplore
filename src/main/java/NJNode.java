@@ -1,5 +1,10 @@
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.LinkedList;
 
+@Getter
+@Setter
 public class NJNode {
 
     static OperatorService operatorService = OperatorService.instance();
@@ -17,12 +22,12 @@ public class NJNode {
 
     public NJNode(Token t, NJNode parent) {
         this.parent = parent;
-        this.parent.children.push(this);
-        this.tokens.push(t);
+        this.parent.children.addLast(this);
+        this.tokens.addLast(t);
 
         if(tokens.size() == 1) {
             this.input = tokens.get(0).text;
-            collectTokens();
+            forceCollectTokens();
         }
     }
 
@@ -30,23 +35,37 @@ public class NJNode {
     public NJNode(LinkedList<Token> tokens, NJNode parent) {
         this.tokens = tokens;
         this.parent = parent;
-        this.parent.children.push(this);
+        this.parent.children.addLast(this);
 
         if(tokens.size() == 1) {
             this.input = tokens.get(0).text;
-            collectTokens();
+            forceCollectTokens();
         }
+    }
+
+    public TokenType getType() {
+        if(tokens != null && !tokens.isEmpty()) {
+            return tokens.getLast().getType();
+        }
+
+        return TokenType.NONE;
     }
 
     public void mutate(Token input) {
         this.tokens.clear();
-        this.tokens.push(input);
+        this.input = input.getText();
+        this.tokens.addLast(input);
+    }
+
+    public void mutate(LinkedList<Token> input) {
+        this.tokens = input;
+        this.input = null;
     }
 
     public NJNode(String input, NJNode parent) {
         this.input = input;
         this.parent = parent;
-        this.parent.children.push(this);
+        this.parent.children.addLast(this);
     }
 
     public void watchdog() {
@@ -219,7 +238,20 @@ public class NJNode {
         }
     }
 
+    public void removeBrackets() {
+        pointer = -1;
+        String sub = findTillNextBracket("()");
+        //System.out.println(pointer);
+    }
+
+    public void forceCollectTokens() {
+        this.tokens.clear();
+        collectTokens();
+    }
+
     public void collectTokens() {
+
+        pointer = -1;
 
         if(!tokens.isEmpty()) {
             //printTokens("Tokens are NOT empty!");
@@ -232,25 +264,29 @@ public class NJNode {
             t = nextToken();
         } while (t.type != TokenType.EOL);
 
-        printTokens(input);
+        //printTokens(input);
     }
 
 
 
+    public void printNodes() {
+        printNodes(this, 1);
+    }
 
     public static void printNodes(NJNode n, int ident) {
         for(int i=1; i<=ident; i++) {
-            System.out.print("_");
+            System.out.print("-");
         }
-        System.out.println(n.input);
 
+
+        n.printTokens("");
         for(NJNode node: n.children) {
             printNodes(node, ident+1);
         }
     }
 
     public void printTokens(String message) {
-        System.out.print(message + " => ");
+        System.out.print(message);
         for(Token tk: tokens) {
             System.out.print(tk.text+":"+tk.type+"; ");
         }
@@ -274,15 +310,17 @@ public class NJNode {
 
             if(operatorService.inLevel(level, t, tokens)) {
                 // !!! Only BINARY operators
-                System.out.println("================");
-                System.out.println("detected leve:"+level);
-                System.out.println(t);
+                //System.out.println("================");
+                //System.out.println("detected leve:"+level);
+                //System.out.println(t);
 
                 Operator op = operatorService.getOperator(t, tokens);
+                //System.out.println(op.getType());
 
                 LinkedList<NJNode> toSubSplit = op.split(i, tokens, this);
                 toParse.addAll(toSubSplit);
 
+                break;
             };
         }
 

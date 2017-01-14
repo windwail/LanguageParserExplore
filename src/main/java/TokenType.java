@@ -20,5 +20,8 @@ public enum TokenType {
     SUBTOKEN, // в скобках
     COMMA, // запятая
     CALL,
-    CALLARGUMENTS
+    CALLARGUMENTS,
+    DOT,
+    VARNAME,
+    NONE
 }

@@ -62,10 +62,10 @@ public class Operator  {
         LinkedList<NJNode> result = new LinkedList<NJNode>();
 
         NJNode lft = new NJNode(left, node);
-        lft.printTokens("new left node");
+        //lft.printTokens("new left node");
 
         NJNode rgt = new NJNode(right, node);
-        rgt.printTokens("new right node");
+        //rgt.printTokens("new right node");
 
         node.mutate(tokens.get(indx));
 

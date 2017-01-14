@@ -22,7 +22,20 @@ public class OperatorCall extends Operator {
 
         LinkedList<NJNode> result = new LinkedList<>();
         assert (tokens.size() == 2);
-        result.add(new NJNode(tokens.get(1), node));
+
+        String[] args = tokens.get(1).text.split(",");
+
+        for(String s: args) {
+            Token t = new Token(s, TokenType.CALLARGUMENTS);
+
+            NJNode nd = new NJNode(t, node);
+            nd.setInput(nd.getTokens().get(0).getText());
+            nd.getTokens().clear();
+            nd.collectTokens();
+            result.add(nd);
+        }
+
+        node.mutate(tokens.get(0));
 
         return result;
     }
