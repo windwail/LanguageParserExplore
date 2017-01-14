@@ -8,12 +8,14 @@ public class Main {
 
         String o1 = "5+(5+3)*7";
         String abd = "some.some.one(abc)+";
-        abd = "x=fact.some(1,2,3)+10";
+        abd = "f(1,2)";
         n = new NJNode(abd);
         //n.collectTokens();
         //assert (n.detectOpLevel() == 1);
         n.splitTokensByLevel();
-        //NJNode.printNodes(n,1);
+        NJNode.printNodes(n,1);
+
+        //if(true) return;
 
         String o2 = "x+b||c*d";
         n = new NJNode(o2);

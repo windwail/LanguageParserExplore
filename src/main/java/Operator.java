@@ -26,7 +26,25 @@ public class Operator  {
         return t.text.equals(text);
     }
 
-    public LinkedList<Token>[] split(int indx, LinkedList<Token> tokens) {
+    /**
+     *
+     * Когда находим оператор - эта функци происохдит разбиение для формирования
+     * дерева
+     *
+     * a+b+c => split(2,{a,b,c},node{a+b+c})
+     *
+     *  +
+     * | \
+     * a b+c
+     *
+     * Не забываем мутировать текующую ноду чтобы в ней был один токен.
+     *
+     * @param indx
+     * @param tokens
+     * @param node
+     * @return
+     */
+    public LinkedList<NJNode> split(int indx, LinkedList<Token> tokens, NJNode node) {
         LinkedList<Token> left = new LinkedList<>();
         LinkedList<Token> middle = new LinkedList<>();
         LinkedList<Token> right = new LinkedList<>();
@@ -41,7 +59,20 @@ public class Operator  {
             }
         }
 
-        return  new LinkedList[] {left, middle, right};
+        LinkedList<NJNode> result = new LinkedList<NJNode>();
+
+        NJNode lft = new NJNode(left, node);
+        lft.printTokens("new left node");
+
+        NJNode rgt = new NJNode(right, node);
+        rgt.printTokens("new right node");
+
+        node.mutate(tokens.get(indx));
+
+        result.add(lft);
+        result.add(rgt);
+
+        return result;
     }
 
 

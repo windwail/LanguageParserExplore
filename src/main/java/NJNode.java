@@ -14,6 +14,19 @@ public class NJNode {
         this.input = input;
     }
 
+
+    public NJNode(Token t, NJNode parent) {
+        this.parent = parent;
+        this.parent.children.push(this);
+        this.tokens.push(t);
+
+        if(tokens.size() == 1) {
+            this.input = tokens.get(0).text;
+            collectTokens();
+        }
+    }
+
+
     public NJNode(LinkedList<Token> tokens, NJNode parent) {
         this.tokens = tokens;
         this.parent = parent;
@@ -21,7 +34,6 @@ public class NJNode {
 
         if(tokens.size() == 1) {
             this.input = tokens.get(0).text;
-            this.tokens.clear();
             collectTokens();
         }
     }
@@ -245,25 +257,6 @@ public class NJNode {
         System.out.print("\n");
     }
 
-    public LinkedList<Token>[] split(int indx) {
-        LinkedList<Token> left = new LinkedList<>();
-        LinkedList<Token> middle = new LinkedList<>();
-        LinkedList<Token> right = new LinkedList<>();
-
-        for(int i=0; i<tokens.size(); i++) {
-            if(i < indx) {
-                left.addLast(tokens.get(i));
-            } else if (i == indx) {
-                middle.addLast(tokens.get(i));
-            } else {
-                right.addLast(tokens.get(i));
-            }
-        }
-
-        return  new LinkedList[] {left, middle, right};
-
-    }
-
     public void splitTokensByLevel() {
 
         collectTokens();
@@ -279,24 +272,17 @@ public class NJNode {
 
             int level = operatorService.detectOpLevel(tokens);
 
-            if(operatorService.inLevel(level, t.text)) {
+            if(operatorService.inLevel(level, t, tokens)) {
                 // !!! Only BINARY operators
                 System.out.println("================");
                 System.out.println("detected leve:"+level);
                 System.out.println(t);
 
-                LinkedList<Token>[] split = split(i);
-                printTokens("current");
+                Operator op = operatorService.getOperator(t, tokens);
 
-                NJNode left = new NJNode(split[0], this);
-                left.printTokens("new left node");
-                toParse.push(left);
+                LinkedList<NJNode> toSubSplit = op.split(i, tokens, this);
+                toParse.addAll(toSubSplit);
 
-                NJNode right = new NJNode(split[2], this);
-                right.printTokens("new right node");
-                toParse.push(right);
-
-                mutate(t);
             };
         }
 
