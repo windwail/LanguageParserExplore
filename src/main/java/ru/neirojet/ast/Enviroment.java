@@ -18,18 +18,7 @@ import java.util.HashMap;
 public class Enviroment {
 
     private Enviroment() {
-        defineVariable("int", "test");
-        setVariable("test", "123");
 
-        Variable<Label> l = new Variable<Label>(VariableType.LABEL, new Label());
-        vars.put("label1", l);
-        Variable<Button> b = new Variable<Button>(VariableType.BUTTON, new Button());
-        vars.put("button1", b);
-        Variable<Input> i = new Variable<Input>(VariableType.INPUT, new Input());
-        vars.put("input1", i);
-        Widget w = new Widget(b.getValue(), l.getValue(), i.getValue());
-        //Variable<Widget> wv = new Variable<>(VariableType.WIDGET, w);
-        //vars.put("widget1", wv);
     }
 
     private HashMap<String, Variable> vars = new HashMap<>();
@@ -67,6 +56,15 @@ public class Enviroment {
 
     public Variable getVariable(String name) {
 
+        return vars.get(name);
+    }
+
+
+    public void put(String name, Variable v) {
+        vars.put(name, v);
+    }
+
+    public Variable get(String name) {
         return vars.get(name);
     }
 
