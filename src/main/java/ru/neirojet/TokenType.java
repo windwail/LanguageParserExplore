@@ -1,3 +1,5 @@
+package ru.neirojet;
+
 /**
  * Created by icetsuk on 13.01.17.
  */

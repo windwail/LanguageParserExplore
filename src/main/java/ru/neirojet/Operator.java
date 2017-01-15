@@ -1,4 +1,5 @@
-import lombok.Generated;
+package ru.neirojet;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,6 +21,12 @@ public class Operator  {
         this.text = text;
         this.type = type;
         this.level = level;
+    }
+
+    public Object calculateValue(NJNode node) {
+
+
+        return null;
     }
 
     public boolean detect(Token t, LinkedList<Token> tokens) {
@@ -67,7 +74,7 @@ public class Operator  {
         NJNode rgt = new NJNode(right, node);
         //rgt.printTokens("new right node");
 
-        node.mutate(tokens.get(indx));
+        node.mutate(tokens.get(indx), this);
 
         result.add(lft);
         result.add(rgt);

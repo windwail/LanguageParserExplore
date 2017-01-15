@@ -1,3 +1,5 @@
+package ru.neirojet;
+
 import java.util.LinkedList;
 
 /**
@@ -29,7 +31,7 @@ public class OperatorComma extends Operator {
             result.add(no);
         }
 
-        node.mutate(tokens.get(indx));
+        node.mutate(tokens.get(indx), this);
 
         return result;
     }

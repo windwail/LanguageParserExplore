@@ -1,3 +1,5 @@
+package ru.neirojet;
+
 import java.util.LinkedList;
 
 /**
@@ -18,7 +20,7 @@ public class OperatorVar extends Operator {
         nd.getTokens().get(0).setType(TokenType.VARNAME);
         result.add(nd);
 
-        node.mutate(tokens.get(0));
+        node.mutate(tokens.get(0), this);
 
         return result;
     }

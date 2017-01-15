@@ -1,3 +1,5 @@
+package ru.neirojet;
+
 import java.util.LinkedList;
 
 /**

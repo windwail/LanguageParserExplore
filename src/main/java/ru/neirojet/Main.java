@@ -1,3 +1,5 @@
+package ru.neirojet;
+
 /**
  * Created by icetsuk on 09.01.17.
  */
@@ -6,14 +8,25 @@ public class Main {
     public static void test() {
         NJNode n;
 
-        String o1 = "5+(5+3)*7";
+        //n.printNodes();
+        //if(true) return;
+
+        String btn = "button1.text = '54';";
+        n = new NJNode(btn);
+        n.splitTokensByLevel();
+        n.calculateValue();
+
+        n.printNodes();
+        if(true) return;
 
         String abd = "one.two.three(5+5,subprocess.getx(3))+2";
         n = new NJNode(abd);
         n.splitTokensByLevel();
-        n.printNodes();
-
-        if(true) return;
+        assert (n.tokens.size() == 1); // mutated
+        assert (n.getType() == TokenType.BINARY);
+        assert (n.getChildren().size() == 2);
+        assert (n.getChildren().get(0).getTokens().size() == 5);
+        assert (n.getChildren().get(0).getTokens().get(0).type == TokenType.SYMBOLIC);
 
         String var = "bool x;";
         n = new NJNode(var);

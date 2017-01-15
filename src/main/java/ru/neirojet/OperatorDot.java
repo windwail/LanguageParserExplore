@@ -1,3 +1,5 @@
+package ru.neirojet;
+
 import java.util.LinkedList;
 
 /**
@@ -6,6 +8,41 @@ import java.util.LinkedList;
 public class OperatorDot extends Operator {
     public OperatorDot(String text, TokenType type, Integer level) {
         super(text, type, level);
+    }
+
+    private Enviroment env = Enviroment.instance();
+
+    @Override
+    public Object calculateValue(NJNode node) {
+
+        LinkedList<Token> tokens = node.tokens;
+
+        if(node.getType() == TokenType.SYMBOLIC) {
+            System.out.println("Symbolic value");
+
+            Object current = null;
+
+            for(int i=0; i<tokens.size(); i++) {
+
+                Token t = tokens.get(i);
+
+                if(t.type == TokenType.SYMBOLIC) {
+
+                    if(current == null) {
+                        env.getVariable(t.text);
+                    } else {
+
+                    }
+                }
+            }
+
+        } else if(node.getType() == TokenType.CALL) {
+            System.out.println("Call");
+        } else {
+            throw new RuntimeException("Incorrect node type for dot operator: " + node.getType());
+        }
+
+        return null;
     }
 
     @Override
@@ -30,7 +67,7 @@ public class OperatorDot extends Operator {
             tkns.add(tokens.get(i));
         }
 
-        node.mutate(tkns);
+        node.mutate(tkns, this);
 
         return result;
     }

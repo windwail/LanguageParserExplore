@@ -1,3 +1,5 @@
+package ru.neirojet;
+
 import java.util.LinkedList;
 
 /**
@@ -35,7 +37,7 @@ public class OperatorCall extends Operator {
             result.add(nd);
         }
 
-        node.mutate(tokens.get(0));
+        node.mutate(tokens.get(0), this);
 
         return result;
     }

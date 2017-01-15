@@ -1,3 +1,5 @@
+package ru.neirojet;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,6 +15,8 @@ public class NJNode {
     private NJNode parent;
     private Integer pointer = -1;
     private int watchdog = 1000;
+    private Object value;
+    private Operator operator;
     LinkedList<Token> tokens = new LinkedList<>();
 
     public NJNode(String input) {
@@ -51,14 +55,17 @@ public class NJNode {
         return TokenType.NONE;
     }
 
-    public void mutate(Token input) {
+
+    public void mutate(Token input, Operator operator) {
         this.tokens.clear();
         this.input = input.getText();
+        this.operator = operator;
         this.tokens.addLast(input);
     }
 
-    public void mutate(LinkedList<Token> input) {
+    public void mutate(LinkedList<Token> input, Operator operator) {
         this.tokens = input;
+        this.operator = operator;
         this.input = null;
     }
 
@@ -160,9 +167,15 @@ public class NJNode {
                 return new Token(findTillSymbolWithShift('"'), TokenType.STRING);
             }
 
+            // Строка - считываем все до конца и выходим.
+            if(c == '\'') {
+                return new Token(findTillSymbolWithShift('\''), TokenType.STRING);
+            }
+
             // Если символ или цифра - значит читаем дальше.
-            if (Character.isAlphabetic(c)) {
+            if (Character.isAlphabetic(c) || (alphabetic && Character.isDigit(c))) {
                 sb.append(c);
+                alphabetic = true;
                 continue;
             }
 
@@ -267,7 +280,19 @@ public class NJNode {
         //printTokens(input);
     }
 
+    public void calculateValue() {
 
+        // Ясень пень сначала делаем это у самых нижних.
+        for(NJNode ch: children) {
+            ch.calculateValue();
+        }
+
+        if(operator != null) {
+            value = operator.calculateValue(this);
+        }
+
+        System.out.println();
+    }
 
     public void printNodes() {
         printNodes(this, 1);
@@ -289,6 +314,9 @@ public class NJNode {
         System.out.print(message);
         for(Token tk: tokens) {
             System.out.print(tk.text+":"+tk.type+"; ");
+        }
+        if(operator != null) {
+            System.out.print("{"+operator.getClass().getName()+"}");
         }
         System.out.print("\n");
     }
