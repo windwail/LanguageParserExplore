@@ -1,4 +1,7 @@
-package ru.neirojet;
+package ru.neirojet.operators;
+
+import ru.neirojet.ast.Token;
+import ru.neirojet.ast.TokenType;
 
 import java.lang.reflect.Constructor;
 import java.util.HashMap;

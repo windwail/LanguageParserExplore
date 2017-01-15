@@ -3,7 +3,6 @@ package ru.neirojet.variables.widgets;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import ru.neirojet.Enviroment;
 import ru.neirojet.variables.Container;
 
 @Getter

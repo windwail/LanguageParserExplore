@@ -1,7 +1,9 @@
-package ru.neirojet;
+package ru.neirojet.ast;
 
 import lombok.Getter;
 import lombok.Setter;
+import ru.neirojet.operators.Operator;
+import ru.neirojet.operators.OperatorService;
 
 import java.util.LinkedList;
 

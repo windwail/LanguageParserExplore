@@ -1,4 +1,9 @@
-package ru.neirojet;
+package ru.neirojet.operators;
+
+import ru.neirojet.ast.Enviroment;
+import ru.neirojet.ast.NJNode;
+import ru.neirojet.ast.Token;
+import ru.neirojet.ast.TokenType;
 
 import java.util.LinkedList;
 
@@ -15,7 +20,7 @@ public class OperatorDot extends Operator {
     @Override
     public Object calculateValue(NJNode node) {
 
-        LinkedList<Token> tokens = node.tokens;
+        LinkedList<Token> tokens = node.getTokens();
 
         if(node.getType() == TokenType.SYMBOLIC) {
             System.out.println("Symbolic value");

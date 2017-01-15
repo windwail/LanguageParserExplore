@@ -1,4 +1,4 @@
-package ru.neirojet;
+package ru.neirojet.ast;
 
 /**
  * Created by icetsuk on 13.01.17.

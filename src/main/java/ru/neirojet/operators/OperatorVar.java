@@ -1,4 +1,8 @@
-package ru.neirojet;
+package ru.neirojet.operators;
+
+import ru.neirojet.ast.NJNode;
+import ru.neirojet.ast.Token;
+import ru.neirojet.ast.TokenType;
 
 import java.util.LinkedList;
 

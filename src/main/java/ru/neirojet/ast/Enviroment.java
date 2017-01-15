@@ -1,8 +1,5 @@
-package ru.neirojet;
+package ru.neirojet.ast;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
 import ru.neirojet.variables.Variable;
 import ru.neirojet.variables.VariableType;
 import ru.neirojet.variables.widgets.Button;
@@ -10,7 +7,6 @@ import ru.neirojet.variables.widgets.Input;
 import ru.neirojet.variables.widgets.Label;
 import ru.neirojet.variables.widgets.Widget;
 
-import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.util.HashMap;
 

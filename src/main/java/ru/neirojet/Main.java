@@ -1,5 +1,8 @@
 package ru.neirojet;
 
+import ru.neirojet.ast.NJNode;
+import ru.neirojet.ast.TokenType;
+
 /**
  * Created by icetsuk on 09.01.17.
  */
@@ -16,13 +19,10 @@ public class Main {
         n.splitTokensByLevel();
         n.calculateValue();
 
-        n.printNodes();
-        if(true) return;
-
         String abd = "one.two.three(5+5,subprocess.getx(3))+2";
         n = new NJNode(abd);
         n.splitTokensByLevel();
-        assert (n.tokens.size() == 1); // mutated
+        assert (n.getTokens().size() == 1); // mutated
         assert (n.getType() == TokenType.BINARY);
         assert (n.getChildren().size() == 2);
         assert (n.getChildren().get(0).getTokens().size() == 5);
@@ -31,8 +31,8 @@ public class Main {
         String var = "bool x;";
         n = new NJNode(var);
         n.splitTokensByLevel();
-        assert (n.tokens.size() == 1); // mutated
-        assert (n.tokens.get(0).type == TokenType.TYPE);
+        assert (n.getTokens().size() == 1); // mutated
+        assert (n.getTokens().get(0).type == TokenType.TYPE);
         assert (n.getChildren().size() == 1);
         assert (n.getChildren().get(0).getTokens().size() == 1);
         assert (n.getChildren().get(0).getTokens().get(0).type == TokenType.VARNAME);
@@ -40,8 +40,8 @@ public class Main {
         String simple_func = "f((1+2),(3*(2+1)))";
         n = new NJNode(simple_func);
         n.splitTokensByLevel();
-        assert (n.tokens.size() == 1); // mutated
-        assert (n.tokens.get(0).type == TokenType.CALL);
+        assert (n.getTokens().size() == 1); // mutated
+        assert (n.getTokens().get(0).type == TokenType.CALL);
         assert (n.getChildren().size() == 2);
         assert (n.getChildren().get(0).getTokens().size() == 1);
         assert (n.getChildren().get(0).getTokens().get(0).type == TokenType.BINARY);

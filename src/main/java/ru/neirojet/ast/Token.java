@@ -1,7 +1,8 @@
-package ru.neirojet;
+package ru.neirojet.ast;
 
 import lombok.Getter;
 import lombok.Setter;
+import ru.neirojet.operators.Operator;
 
 /**
  * Created by icetsuk on 13.01.17.
