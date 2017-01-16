@@ -4,12 +4,18 @@ import lombok.Getter;
 import lombok.Setter;
 import ru.neirojet.operators.Operator;
 import ru.neirojet.operators.OperatorService;
+import ru.neirojet.variables.Variable;
+import ru.neirojet.variables.VariableType;
 
+import javax.print.DocFlavor;
+import java.math.BigInteger;
 import java.util.LinkedList;
 
 @Getter
 @Setter
 public class NJNode {
+
+    private Environment env = Environment.instance();
 
     static OperatorService operatorService = OperatorService.instance();
     private String input;
@@ -17,8 +23,11 @@ public class NJNode {
     private NJNode parent;
     private Integer pointer = -1;
     private int watchdog = 1000;
-    private Object value;
+    private Variable value;
     private Operator operator;
+
+
+
     LinkedList<Token> tokens = new LinkedList<>();
 
     public NJNode(String input) {
@@ -31,7 +40,7 @@ public class NJNode {
         this.parent.children.addLast(this);
         this.tokens.addLast(t);
 
-        if(tokens.size() == 1) {
+        if (tokens.size() == 1) {
             this.input = tokens.get(0).text;
             forceCollectTokens();
         }
@@ -43,14 +52,14 @@ public class NJNode {
         this.parent = parent;
         this.parent.children.addLast(this);
 
-        if(tokens.size() == 1) {
+        if (tokens.size() == 1) {
             this.input = tokens.get(0).text;
             forceCollectTokens();
         }
     }
 
     public TokenType getType() {
-        if(tokens != null && !tokens.isEmpty()) {
+        if (tokens != null && !tokens.isEmpty()) {
             return tokens.getLast().getType();
         }
 
@@ -82,7 +91,7 @@ public class NJNode {
     }
 
     /**
-     *  Выризаем строку до следующего символа с продвижением указателя.
+     * Выризаем строку до следующего символа с продвижением указателя.
      */
     public String findTillSymbolWithShift(char wantedChar) {
         StringBuilder sb = new StringBuilder();
@@ -90,20 +99,20 @@ public class NJNode {
         pointer++;
         sb.append(c);
 
-        while(pointer<input.length()) {
+        while (pointer < input.length()) {
             c = input.charAt(pointer);
             sb.append(c);
-            if(c == wantedChar) {
+            if (c == wantedChar) {
                 return sb.toString();
             }
             pointer++;
         }
 
-        throw new RuntimeException("Cant find symbol while parsing: "+wantedChar);
+        throw new RuntimeException("Cant find symbol while parsing: " + wantedChar);
     }
 
     /**
-     *  Выризаем строку до следующего символа с продвижением указателя.
+     * Выризаем строку до следующего символа с продвижением указателя.
      */
     public String findTillNextBracket(String brackets) {
         LinkedList<Character> stack = new LinkedList<>();
@@ -118,17 +127,17 @@ public class NJNode {
         //sb.append(c);
         stack.add(c);
 
-        while(!stack.isEmpty() && pointer < input.length()) {
+        while (!stack.isEmpty() && pointer < input.length()) {
             c = input.charAt(pointer);
-            if(c == opening) {
+            if (c == opening) {
                 stack.push(c);
             }
-            if(c == closing) {
+            if (c == closing) {
                 stack.pop();
             }
 
             // Add only if it is not last closing bracket.
-            if(!stack.isEmpty()) {
+            if (!stack.isEmpty()) {
                 sb.append(c);
                 pointer++;
             }
@@ -142,7 +151,7 @@ public class NJNode {
     }
 
     /**
-     *  Получаем следующий по пути следования токен.
+     * Получаем следующий по пути следования токен.
      */
     public Token nextToken() {
 
@@ -158,19 +167,19 @@ public class NJNode {
 
             // End of line.
             char c;
-            if(pointer >= input.length()) {
+            if (pointer >= input.length()) {
                 c = ';';
             } else {
                 c = input.charAt(pointer);
             }
 
             // Строка - считываем все до конца и выходим.
-            if(c == '"') {
+            if (c == '"') {
                 return new Token(findTillSymbolWithShift('"'), TokenType.STRING);
             }
 
             // Строка - считываем все до конца и выходим.
-            if(c == '\'') {
+            if (c == '\'') {
                 return new Token(findTillSymbolWithShift('\''), TokenType.STRING);
             }
 
@@ -182,7 +191,7 @@ public class NJNode {
             }
 
             // Если символ или цифра - значит читаем дальше.
-            if (Character.isDigit(c) || (c=='.' && numeric)) {
+            if (Character.isDigit(c) || (c == '.' && numeric)) {
                 sb.append(c);
                 numeric = true;
                 continue;
@@ -193,7 +202,7 @@ public class NJNode {
 
                 // Символ оказался терминальным для переменной
                 // Считаем его еще раз.
-                if(c != ' ') {
+                if (c != ' ') {
                     pointer--;
                 }
 
@@ -202,7 +211,7 @@ public class NJNode {
                     return new Token(operatorService.getOperator(sb.toString()));
                 } else {
                     // Если нет, то значит это число либо строка.
-                    if(numeric) {
+                    if (numeric) {
                         return new Token(sb.toString(), TokenType.NUMBER);
                     } else {
                         return new Token(sb.toString(), TokenType.SYMBOLIC);
@@ -215,11 +224,11 @@ public class NJNode {
 
 
             // Строка - считываем все до конца и выходим.
-            if(c == '(') {
+            if (c == '(') {
                 String sub = findTillNextBracket("()");
                 //System.out.println("find sub:"+sub);
 
-                if(!tokens.isEmpty() && tokens.getLast().type==TokenType.SYMBOLIC) {
+                if (!tokens.isEmpty() && tokens.getLast().type == TokenType.SYMBOLIC) {
                     tokens.getLast().type = TokenType.CALL;
                     return new Token(sub, TokenType.CALLARGUMENTS);
                 } else {
@@ -229,17 +238,17 @@ public class NJNode {
             }
 
             // До этого ничего не было. Просто пропускаем пробель.
-            if(sb.length() == 0 && c == ' ') {
+            if (sb.length() == 0 && c == ' ') {
                 continue;
             }
 
             //Проверяем является ли он двусимволным оператором
-            if(pointer+2 <= input.length()) {
-                String op = input.substring(pointer,pointer+2);
+            if (pointer + 2 <= input.length()) {
+                String op = input.substring(pointer, pointer + 2);
 
-                if(operatorService.isOperator(op)) {
+                if (operatorService.isOperator(op)) {
                     //System.out.println("found op: " + op);
-                    pointer ++;
+                    pointer++;
                     return new Token(operatorService.getOperator(op));
                 }
             }
@@ -249,7 +258,7 @@ public class NJNode {
                 return new Token(operatorService.getOperator(c + ""));
             }
 
-            throw new RuntimeException("Unknown symbol: "+c);
+            throw new RuntimeException("Unknown symbol: " + c);
         }
     }
 
@@ -268,7 +277,7 @@ public class NJNode {
 
         pointer = -1;
 
-        if(!tokens.isEmpty()) {
+        if (!tokens.isEmpty()) {
             //printTokens("Tokens are NOT empty!");
             return;
         }
@@ -285,12 +294,33 @@ public class NJNode {
     public void calculateValue() {
 
         // Ясень пень сначала делаем это у самых нижних.
-        for(NJNode ch: children) {
+        for (NJNode ch : children) {
             ch.calculateValue();
         }
 
-        if(operator != null) {
+
+        if (operator != null) {
             value = operator.calculateValue(this);
+        } else {
+
+            assert (tokens.size() == 1);
+
+            Token t = tokens.get(0);
+
+            switch (t.getType()) {
+                case STRING:
+                    value = new Variable<>(VariableType.STRING, t.getText(), null);
+                    break;
+                case NUMBER:
+                    value = new Variable<>(VariableType.INTEGER, new BigInteger(t.getText()), null);
+                    break;
+                case SYMBOLIC:
+                    value = env.getVariable(t.getText());
+                    break;
+                default:
+                    throw new RuntimeException("Wrong type for value node:"+t.getType()+":{"+t.getText()+"}");
+            }
+
         }
 
         System.out.println();
@@ -301,24 +331,24 @@ public class NJNode {
     }
 
     public static void printNodes(NJNode n, int ident) {
-        for(int i=1; i<=ident; i++) {
+        for (int i = 1; i <= ident; i++) {
             System.out.print("-");
         }
 
 
         n.printTokens("");
-        for(NJNode node: n.children) {
-            printNodes(node, ident+1);
+        for (NJNode node : n.children) {
+            printNodes(node, ident + 1);
         }
     }
 
     public void printTokens(String message) {
         System.out.print(message);
-        for(Token tk: tokens) {
-            System.out.print(tk.text+":"+tk.type+"; ");
+        for (Token tk : tokens) {
+            System.out.print(tk.text + ":" + tk.type + "; ");
         }
-        if(operator != null) {
-            System.out.print("{"+operator.getClass().getName()+"}");
+        if (operator != null) {
+            System.out.print("{" + operator.getClass().getName() + "}");
         }
         System.out.print("\n");
     }
@@ -327,7 +357,7 @@ public class NJNode {
 
         collectTokens();
 
-        if(tokens.size() == 1) {
+        if (tokens.size() == 1) {
             return;
         }
 
@@ -338,7 +368,7 @@ public class NJNode {
 
             int level = operatorService.detectOpLevel(tokens);
 
-            if(operatorService.inLevel(level, t, tokens)) {
+            if (operatorService.inLevel(level, t, tokens)) {
                 // !!! Only BINARY operators
                 //System.out.println("================");
                 //System.out.println("detected leve:"+level);
@@ -351,11 +381,12 @@ public class NJNode {
                 toParse.addAll(toSubSplit);
 
                 break;
-            };
+            }
+            ;
         }
 
         // run parse in sub noded
-        for(NJNode n: toParse) {
+        for (NJNode n : toParse) {
             n.splitTokensByLevel();
         }
     }

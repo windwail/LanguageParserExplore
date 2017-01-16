@@ -5,6 +5,7 @@ import lombok.Setter;
 import ru.neirojet.ast.NJNode;
 import ru.neirojet.ast.Token;
 import ru.neirojet.ast.TokenType;
+import ru.neirojet.variables.Variable;
 
 import java.util.LinkedList;
 
@@ -26,7 +27,7 @@ public class Operator  {
         this.level = level;
     }
 
-    public Object calculateValue(NJNode node) {
+    public Variable calculateValue(NJNode node) {
 
 
         return null;

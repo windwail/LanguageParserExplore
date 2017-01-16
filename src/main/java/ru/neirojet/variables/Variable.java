@@ -12,23 +12,32 @@ import java.util.HashMap;
 public class Variable<E> {
     VariableType type;
     E value;
+    String name;
 
     private HashMap<String, Variable> properties = new HashMap<>();
 
-    public Variable(VariableType t, E e) {
+    public Variable getProperty(String name) {
+        return properties.get(name);
+    }
+
+    public void setProperty(String name, Object value) {
+        properties.get(name).value = value;
+    }
+
+    public Variable(VariableType t, E e, String name) {
 
         this.type = t;
         this.value = e;
+        this.name = name;
 
         if(e instanceof Container) {
-            System.out.println("Creating variable: " + t + " value:" + e);
             try {
                 Field[] attributes = t.getClazz().getDeclaredFields();
                 for (Field field : attributes) {
                     if (VariableType.contains(field.getType())) {
                         field.setAccessible(true);
                         Object value = e != null ? field.get(e) : null;
-                        Variable v = new Variable(VariableType.getType(field.getType()), value);
+                        Variable v = new Variable(VariableType.getType(field.getType()), value, field.getName());
                         properties.put(field.getName(), v);
                     }
                 }

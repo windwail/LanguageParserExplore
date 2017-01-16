@@ -31,7 +31,7 @@ public class OperatorService {
         }
         operators.put(UNKNOWN, new HashSet<>());
 
-        build("=", TokenType.BINARY, 1);
+        build("=", TokenType.BINARY, 1, OperatorAssign.class);
         build(",", TokenType.COMMA, 1, OperatorComma.class);
         build("+=", TokenType.BINARY, 1);
         build("-=", TokenType.BINARY, 1);

@@ -1,11 +1,9 @@
 package ru.neirojet.ast;
 
+import lombok.Getter;
+import lombok.Setter;
 import ru.neirojet.variables.Variable;
 import ru.neirojet.variables.VariableType;
-import ru.neirojet.variables.widgets.Button;
-import ru.neirojet.variables.widgets.Input;
-import ru.neirojet.variables.widgets.Label;
-import ru.neirojet.variables.widgets.Widget;
 
 import java.math.BigInteger;
 import java.util.HashMap;
@@ -14,18 +12,19 @@ import java.util.HashMap;
  * Created by icetusk on 14.01.17.
  */
 
+@Getter
+@Setter
+public class Environment {
 
-public class Enviroment {
-
-    private Enviroment() {
+    private Environment() {
 
     }
 
     private HashMap<String, Variable> vars = new HashMap<>();
 
-    private static final Enviroment INSTANCE = new Enviroment();
+    private static final Environment INSTANCE = new Environment();
 
-    public static Enviroment instance() {
+    public static Environment instance() {
         return INSTANCE;
     }
 
@@ -39,13 +38,13 @@ public class Enviroment {
 
         switch (t) {
             case BOOLEAN:
-                v = new Variable<Boolean>(t, false);
+                v = new Variable<Boolean>(t, false, name);
                 break;
             case STRING:
-                v = new Variable<String>(t, "");
+                v = new Variable<String>(t, "", name);
                 break;
             case INTEGER:
-                v = new Variable<BigInteger>(t, new BigInteger("0"));
+                v = new Variable<BigInteger>(t, new BigInteger("0"), name);
                 break;
             default:
                 throw new RuntimeException("Unknown type!");
@@ -62,6 +61,10 @@ public class Enviroment {
 
     public void put(String name, Variable v) {
         vars.put(name, v);
+    }
+
+    public void put(Variable v) {
+        vars.put(v.getName(), v);
     }
 
     public Variable get(String name) {

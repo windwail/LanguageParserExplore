@@ -1,9 +1,10 @@
 package ru.neirojet.operators;
 
-import ru.neirojet.ast.Enviroment;
+import ru.neirojet.ast.Environment;
 import ru.neirojet.ast.NJNode;
 import ru.neirojet.ast.Token;
 import ru.neirojet.ast.TokenType;
+import ru.neirojet.variables.Variable;
 
 import java.util.LinkedList;
 
@@ -15,28 +16,27 @@ public class OperatorDot extends Operator {
         super(text, type, level);
     }
 
-    private Enviroment env = Enviroment.instance();
+    private Environment env = Environment.instance();
 
     @Override
-    public Object calculateValue(NJNode node) {
+    public Variable calculateValue(NJNode node) {
 
         LinkedList<Token> tokens = node.getTokens();
 
         if(node.getType() == TokenType.SYMBOLIC) {
             System.out.println("Symbolic value");
 
-            Object current = null;
+            Variable current = null;
 
             for(int i=0; i<tokens.size(); i++) {
 
                 Token t = tokens.get(i);
 
                 if(t.type == TokenType.SYMBOLIC) {
-
-                    if(current == null) {
-                        env.getVariable(t.text);
+                    if(current == null) {d
+                        current = env.getVariable(t.text);
                     } else {
-
+                        current = current.getProperty(t.text);
                     }
                 }
             }

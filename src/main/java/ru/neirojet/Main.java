@@ -8,13 +8,6 @@ import ru.neirojet.ast.TokenType;
  */
 public class Main {
 
-    public static void test() {
-
-    }
-
-
     public static void main(String[] args) {
-        test();
-
     }
 }
