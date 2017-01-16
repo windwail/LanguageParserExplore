@@ -7,7 +7,7 @@ import ru.neirojet.variables.widgets.Input;
 import ru.neirojet.variables.widgets.Label;
 import ru.neirojet.variables.widgets.Widget;
 
-import java.math.BigInteger;
+import java.math.BigDecimal;
 import java.util.HashSet;
 
 /**
@@ -17,7 +17,7 @@ import java.util.HashSet;
 public enum VariableType {
     BOOLEAN("bool", Boolean.class),
     STRING("string", String.class),
-    INTEGER("int", BigInteger.class),
+    INTEGER("int", BigDecimal.class),
     BUTTON("button", Button.class),
     LABEL("label", Label.class),
     INPUT("input", Input.class),

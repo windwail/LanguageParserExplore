@@ -5,7 +5,7 @@ import lombok.Setter;
 import ru.neirojet.variables.Variable;
 import ru.neirojet.variables.VariableType;
 
-import java.math.BigInteger;
+import java.math.BigDecimal;
 import java.util.HashMap;
 
 /**
@@ -44,7 +44,7 @@ public class Environment {
                 v = new Variable<String>(t, "", name);
                 break;
             case INTEGER:
-                v = new Variable<BigInteger>(t, new BigInteger("0"), name);
+                v = new Variable<BigDecimal>(t, new BigDecimal("0"), name);
                 break;
             default:
                 throw new RuntimeException("Unknown type!");
@@ -86,7 +86,7 @@ public class Environment {
                 v.setValue(value);
                 break;
             case INTEGER:
-                v.setValue(new BigInteger(value));
+                v.setValue(new BigDecimal(value));
                 break;
             default:
                 throw new RuntimeException("Unknown type!");

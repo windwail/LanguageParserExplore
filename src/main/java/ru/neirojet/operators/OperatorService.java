@@ -61,8 +61,8 @@ public class OperatorService {
         build(">>", TokenType.BINARY, 10);
         build(">>>", TokenType.BINARY, 10);
 
-        build("-", TokenType.BINARY, 11);
-        build("+", TokenType.BINARY, 11);
+        build("-", TokenType.BINARY, 11, OperatorAdding.class);
+        build("+", TokenType.BINARY, 11, OperatorAdding.class);
 
         build("*", TokenType.BINARY, 12);
         build("/", TokenType.BINARY, 12);

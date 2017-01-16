@@ -9,5 +9,17 @@ import ru.neirojet.ast.TokenType;
 public class Main {
 
     public static void main(String[] args) {
+
+        String btn = "int xval;";
+        NJNode n = new NJNode(btn);
+        n.splitTokensByLevel();
+        //n.calculateValue();
+
+        btn = "xval = 5 + 5;";
+        n = new NJNode(btn);
+        n.splitTokensByLevel();
+        n.calculateValue();
+
+        System.out.println(n.getValue().getValue());
     }
 }

@@ -8,7 +8,7 @@ import ru.neirojet.variables.Variable;
 import ru.neirojet.variables.VariableType;
 
 import javax.print.DocFlavor;
-import java.math.BigInteger;
+import java.math.BigDecimal;
 import java.util.LinkedList;
 
 @Getter
@@ -312,7 +312,7 @@ public class NJNode {
                     value = new Variable<>(VariableType.STRING, t.getText(), null);
                     break;
                 case NUMBER:
-                    value = new Variable<>(VariableType.INTEGER, new BigInteger(t.getText()), null);
+                    value = new Variable<>(VariableType.INTEGER, new BigDecimal(t.getText()), null);
                     break;
                 case SYMBOLIC:
                     value = env.getVariable(t.getText());

@@ -49,4 +49,12 @@ public class Variable<E> {
         }
 
     }
+
+    @Override
+    public String toString() {
+        return "Variable{" +
+                "type=" + type +
+                ", value=" + value +
+                '}';
+    }
 }
