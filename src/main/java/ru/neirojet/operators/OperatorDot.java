@@ -33,7 +33,7 @@ public class OperatorDot extends Operator {
                 Token t = tokens.get(i);
 
                 if(t.type == TokenType.SYMBOLIC) {
-                    if(current == null) {d
+                    if(current == null) {
                         current = env.getVariable(t.text);
                     } else {
                         current = current.getProperty(t.text);
