@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import ru.neirojet.operators.Operator;
 import ru.neirojet.operators.OperatorService;
+import ru.neirojet.operators.RightToLeftOperator;
 import ru.neirojet.variables.Variable;
 import ru.neirojet.variables.VariableType;
 
@@ -345,7 +346,7 @@ public class NJNode {
     public void printTokens(String message) {
         System.out.print(message);
         for (Token tk : tokens) {
-            System.out.print(tk.text + ":" + tk.type + "; ");
+            System.out.print("{"+tk.text + "}:" + tk.type + "; ");
         }
         if (operator != null) {
             System.out.print("{" + operator.getClass().getName() + "}");
@@ -376,6 +377,17 @@ public class NJNode {
 
                 Operator op = operatorService.getOperator(t, tokens);
                 //System.out.println(op.getType());
+
+                if(op instanceof RightToLeftOperator) {
+                    // Отматываем все вправо по тому же уровню операторов.
+                    for(int j=i+1; j<tokens.size(); j++) {
+                        t = tokens.get(i);
+                        if(operatorService.inLevel(level, t, tokens)) {
+                            i = j;
+                        }
+                    }
+
+                }
 
                 LinkedList<NJNode> toSubSplit = op.split(i, tokens, this);
                 toParse.addAll(toSubSplit);

@@ -33,21 +33,6 @@ public class OperatorService {
 
         build("=", TokenType.BINARY, 1, OperatorAssign.class);
         build(",", TokenType.COMMA, 1, OperatorComma.class);
-        build("+=", TokenType.BINARY, 1);
-        build("-=", TokenType.BINARY, 1);
-        build("*=", TokenType.BINARY, 1);
-        build("/=", TokenType.BINARY, 1);
-        build("%=", TokenType.BINARY, 1);
-
-        build("||", TokenType.BINARY, 3);
-
-        build("&&", TokenType.BINARY, 4);
-
-        build("|", TokenType.BINARY, 5);
-
-        build("^", TokenType.BINARY, 6);
-
-        build("&", TokenType.BINARY, 7);
 
         build("==", TokenType.BINARY, 8);
         build("!=", TokenType.BINARY, 8);
@@ -56,10 +41,6 @@ public class OperatorService {
         build("<=", TokenType.BINARY, 9);
         build(">", TokenType.BINARY, 9);
         build(">=", TokenType.BINARY, 9);
-
-        build("<<", TokenType.BINARY, 10);
-        build(">>", TokenType.BINARY, 10);
-        build(">>>", TokenType.BINARY, 10);
 
         build("-", TokenType.BINARY, 11, OperatorAdding.class);
         build("+", TokenType.BINARY, 11, OperatorAdding.class);
@@ -80,7 +61,6 @@ public class OperatorService {
 
         build(";", TokenType.EOL);
         build(" ", TokenType.BLANK);
-
 
         build("bool", TokenType.TYPE, OperatorVar.class);
         build("int", TokenType.TYPE, OperatorVar.class);
@@ -151,6 +131,10 @@ public class OperatorService {
             }
         }
         return false;
+    }
+
+    public HashSet<Operator> getLevel(Integer level) {
+        return operators.get(level);
     }
 
     public boolean isOperator(String text) {

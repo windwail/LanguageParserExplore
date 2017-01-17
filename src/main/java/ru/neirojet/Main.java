@@ -10,6 +10,8 @@ public class Main {
 
     public static void main(String[] args) {
 
+
+        /*
         String btn = "int xval;";
         NJNode n = new NJNode(btn);
         n.splitTokensByLevel();
@@ -21,5 +23,20 @@ public class Main {
         n.calculateValue();
 
         System.out.println(n.getValue().getValue());
+        *
+        */
+
+
+        String btn = "1 + 2 + 3 - 3 - 2 - 1;";
+
+
+        NJNode n = new NJNode(btn);
+        n.splitTokensByLevel();
+        n.calculateValue();
+        n.printNodes();
+
+        System.out.println(n.getValue().getValue());
+
+
     }
 }

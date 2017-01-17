@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 /**
  * Created by schukanov on 16.01.17.
  */
-public class OperatorAdding extends Operator{
+public class OperatorAdding extends RightToLeftOperator{
     public OperatorAdding(String text, TokenType type, Integer level) {
         super(text, type, level);
     }
@@ -23,7 +23,6 @@ public class OperatorAdding extends Operator{
         assert (node.getChildren().size()==2);
         assert (node.getChildren().getFirst().getType()==TokenType.NUMBER);
         assert (node.getChildren().getFirst().getValue()!=null);
-        assert (node.getChildren().getLast().getType()==TokenType.NUMBER);
         assert (node.getChildren().getLast().getValue()!=null);
 
 
