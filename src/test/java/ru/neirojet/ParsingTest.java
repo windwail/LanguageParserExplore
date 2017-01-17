@@ -9,7 +9,7 @@ import static org.junit.Assert.*;
 /**
  * Created by icetusk on 15.01.17.
  */
-public class ParsingTest {
+public class ParsingTest extends NeirojetTest{
     @Test
     public void testParsing() throws Exception {
         NJNode n;
@@ -17,7 +17,7 @@ public class ParsingTest {
         //n.printNodes();
         //if(true) return;
 
-        String btn = "button1.text = '54';";
+        String btn = "widget1.button1.text = '54';";
         n = new NJNode(btn);
         n.splitTokensByLevel();
         n.calculateValue();

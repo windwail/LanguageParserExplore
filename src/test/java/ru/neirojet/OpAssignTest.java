@@ -3,6 +3,7 @@ package ru.neirojet;
 import org.junit.Test;
 import ru.neirojet.ast.NJNode;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import static org.junit.Assert.*;
@@ -21,7 +22,7 @@ public class OpAssignTest extends NeirojetTest{
         n.splitTokensByLevel();
         n.calculateValue();
 
-        assertTrue(env.get("test").getValue().equals(new BigInteger("54")));
+        assertTrue(env.get("test").getValue().equals(new BigDecimal("54")));
     }
 
     @Test(expected=RuntimeException.class)

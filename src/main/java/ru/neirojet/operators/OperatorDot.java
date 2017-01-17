@@ -41,13 +41,13 @@ public class OperatorDot extends Operator {
                 }
             }
 
+            return current;
+
         } else if(node.getType() == TokenType.CALL) {
-            System.out.println("Call");
+            throw new RuntimeException("NOT IMPLEMENTED YET!");
         } else {
             throw new RuntimeException("Incorrect node type for dot operator: " + node.getType());
         }
-
-        return null;
     }
 
     @Override
