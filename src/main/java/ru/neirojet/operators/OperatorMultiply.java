@@ -9,10 +9,10 @@ import ru.neirojet.variables.VariableType;
 import java.math.BigDecimal;
 
 /**
- * Created by schukanov on 16.01.17.
+ * Created by schukanov on 18.01.17.
  */
-public class OperatorAdding extends RightToLeftOperator{
-    public OperatorAdding(String text, TokenType type, Integer level) {
+public class OperatorMultiply extends LeftToRightOperator{
+    public OperatorMultiply(String text, TokenType type, Integer level) {
         super(text, type, level);
     }
 
@@ -21,31 +21,22 @@ public class OperatorAdding extends RightToLeftOperator{
 
         assert (node.getTokens().size()==1);
         assert (node.getChildren().size()==2);
+        assert (node.getChildren().getFirst().getType()==TokenType.NUMBER);
         assert (node.getChildren().getFirst().getValue()!=null);
         assert (node.getChildren().getLast().getValue()!=null);
 
         Token op = node.getTokens().getFirst();
 
-
-
         Variable<BigDecimal> v1 = node.getChildren().getFirst().getValue();
         Variable<BigDecimal> v2 = node.getChildren().getLast().getValue();
 
-        if(v1 == null) {
-            System.out.println("v1 == null");
-        }
-
-        if(v2 == null) {
-            System.out.println("v2 == null");
-            NJNode n =  node.getChildren().getLast();
-            n.printTokens("explore:");
-        }
-
         BigDecimal res = null;
-        if(op.getText().equals("+")) {
-            res = v1.getValue().add(v2.getValue());
-        } else if(op.getText().equals("-")) {
-            res = v1.getValue().subtract(v2.getValue());
+        if(op.getText().equals("*")) {
+            res = v1.getValue().multiply(v2.getValue());
+        } else if(op.getText().equals("/")) {
+            res = v1.getValue().divide(v2.getValue());
+        } else if(op.getText().equals("%")) {
+            res = v1.getValue().remainder(v2.getValue());
         }
 
         return new Variable(VariableType.INTEGER, res, null);

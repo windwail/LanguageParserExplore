@@ -45,9 +45,9 @@ public class OperatorService {
         build("-", TokenType.BINARY, 11, OperatorAdding.class);
         build("+", TokenType.BINARY, 11, OperatorAdding.class);
 
-        build("*", TokenType.BINARY, 12);
-        build("/", TokenType.BINARY, 12);
-        build("%", TokenType.BINARY, 12);
+        build("*", TokenType.BINARY, 12, OperatorMultiply.class);
+        build("/", TokenType.BINARY, 12, OperatorMultiply.class);
+        build("%", TokenType.BINARY, 12, OperatorMultiply.class);
 
         build("++", TokenType.BINARY, 13);
         build("--", TokenType.BINARY, 13);
@@ -123,14 +123,8 @@ public class OperatorService {
     }
 
     public boolean inLevel(int level, Token to, LinkedList<Token> tokens) {
-        for (Operator o : opsByText.values()) {
-            if (o.detect(to, tokens)) {
-                if (o.getLevel() == level) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        Operator o = opsByText.get(to.getText());
+        return o != null ? level == o.getLevel() : false ;
     }
 
     public HashSet<Operator> getLevel(Integer level) {

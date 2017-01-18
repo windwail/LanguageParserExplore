@@ -166,6 +166,11 @@ public class NJNode {
 
             pointer++;
 
+            if(input == null) {
+
+                System.out.println("Input in null");
+            }
+
             // End of line.
             char c;
             if (pointer >= input.length()) {
@@ -302,6 +307,12 @@ public class NJNode {
 
         if (operator != null) {
             value = operator.calculateValue(this);
+
+            if(value == null) {
+                System.out.println("Cant calculate value for Node. Operator = "+operator);
+                printTokens("Arghhhh!");
+                printNodes();
+            }
         } else {
 
             assert (tokens.size() == 1);
@@ -313,6 +324,7 @@ public class NJNode {
                     value = new Variable<>(VariableType.STRING, t.getText(), null);
                     break;
                 case NUMBER:
+                    System.out.println("NUMBER"+t.getText());
                     value = new Variable<>(VariableType.INTEGER, new BigDecimal(t.getText()), null);
                     break;
                 case SYMBOLIC:
@@ -321,10 +333,7 @@ public class NJNode {
                 default:
                     throw new RuntimeException("Wrong type for value node:"+t.getType()+":{"+t.getText()+"}");
             }
-
         }
-
-        System.out.println();
     }
 
     public void printNodes() {
@@ -381,7 +390,7 @@ public class NJNode {
                 if(op instanceof RightToLeftOperator) {
                     // Отматываем все вправо по тому же уровню операторов.
                     for(int j=i+1; j<tokens.size(); j++) {
-                        t = tokens.get(i);
+                        t = tokens.get(j);
                         if(operatorService.inLevel(level, t, tokens)) {
                             i = j;
                         }

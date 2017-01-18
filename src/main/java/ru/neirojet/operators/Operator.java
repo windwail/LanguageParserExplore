@@ -28,10 +28,9 @@ public class Operator  {
     }
 
     public Variable calculateValue(NJNode node) {
-
-
         return null;
     }
+
 
     public boolean detect(Token t, LinkedList<Token> tokens) {
         return t.text.equals(text);

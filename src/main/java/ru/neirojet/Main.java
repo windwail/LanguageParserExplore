@@ -27,13 +27,13 @@ public class Main {
         */
 
 
-        String btn = "1 + 2 + 3 - 3 - 2 - 1;";
+        String btn = "1 + 2 + 3 * 4 +5 + 6;";
 
 
         NJNode n = new NJNode(btn);
         n.splitTokensByLevel();
-        n.calculateValue();
         n.printNodes();
+        n.calculateValue();
 
         System.out.println(n.getValue().getValue());
 
