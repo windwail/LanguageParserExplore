@@ -1,7 +1,5 @@
 package ru.neirojet.variables;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import ru.neirojet.variables.widgets.Button;
 import ru.neirojet.variables.widgets.Input;
 import ru.neirojet.variables.widgets.Label;
@@ -13,7 +11,6 @@ import java.util.HashSet;
 /**
  * Created by icetusk on 15.01.17.
  */
-@AllArgsConstructor
 public enum VariableType {
     BOOLEAN("bool", Boolean.class),
     STRING("string", String.class),
@@ -24,9 +21,7 @@ public enum VariableType {
     WIDGET("widget", Widget.class),
     FUNCTION("function", Runnable.class);
 
-    @Getter
     private String text;
-    @Getter
     private Class clazz;
 
     public static HashSet<Class> classes = new HashSet<>();
@@ -58,6 +53,21 @@ public enum VariableType {
         return null;
     }
 
+    VariableType(String text, Class clazz) {
+        this.text = text;
+        this.clazz = clazz;
+    }
 
+    public String getText() {
+        return text;
+    }
+
+    public Class getClazz() {
+        return clazz;
+    }
+
+    public static HashSet<Class> getClasses() {
+        return classes;
+    }
 }
 

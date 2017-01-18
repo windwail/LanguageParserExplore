@@ -1,7 +1,5 @@
 package ru.neirojet.ast;
 
-import lombok.Getter;
-import lombok.Setter;
 import ru.neirojet.operators.Operator;
 import ru.neirojet.operators.OperatorService;
 import ru.neirojet.operators.RightToLeftOperator;
@@ -12,8 +10,7 @@ import javax.print.DocFlavor;
 import java.math.BigDecimal;
 import java.util.LinkedList;
 
-@Getter
-@Setter
+
 public class NJNode {
 
     private Environment env = Environment.instance();
@@ -414,6 +411,62 @@ public class NJNode {
 
     public int detectOpLevel() {
         return operatorService.detectOpLevel(tokens);
+    }
+
+    public String getInput() {
+        return input;
+    }
+
+    public void setInput(String input) {
+        this.input = input;
+    }
+
+    public LinkedList<NJNode> getChildren() {
+        return children;
+    }
+
+    public void setChildren(LinkedList<NJNode> children) {
+        this.children = children;
+    }
+
+    public NJNode getParent() {
+        return parent;
+    }
+
+    public void setParent(NJNode parent) {
+        this.parent = parent;
+    }
+
+    public Integer getPointer() {
+        return pointer;
+    }
+
+    public void setPointer(Integer pointer) {
+        this.pointer = pointer;
+    }
+
+    public Variable getValue() {
+        return value;
+    }
+
+    public void setValue(Variable value) {
+        this.value = value;
+    }
+
+    public Operator getOperator() {
+        return operator;
+    }
+
+    public void setOperator(Operator operator) {
+        this.operator = operator;
+    }
+
+    public LinkedList<Token> getTokens() {
+        return tokens;
+    }
+
+    public void setTokens(LinkedList<Token> tokens) {
+        this.tokens = tokens;
     }
 }
 

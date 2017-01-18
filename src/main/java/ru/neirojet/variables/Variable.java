@@ -1,14 +1,8 @@
 package ru.neirojet.variables;
 
-import lombok.Getter;
-import lombok.Setter;
-
-import javax.xml.ws.BindingType;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 
-@Getter
-@Setter
 public class Variable<E> {
     VariableType type;
     E value;
@@ -56,5 +50,37 @@ public class Variable<E> {
                 "type=" + type +
                 ", value=" + value +
                 '}';
+    }
+
+    public VariableType getType() {
+        return type;
+    }
+
+    public void setType(VariableType type) {
+        this.type = type;
+    }
+
+    public E getValue() {
+        return value;
+    }
+
+    public void setValue(E value) {
+        this.value = value;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public HashMap<String, Variable> getProperties() {
+        return properties;
+    }
+
+    public void setProperties(HashMap<String, Variable> properties) {
+        this.properties = properties;
     }
 }

@@ -1,7 +1,5 @@
 package ru.neirojet.operators;
 
-import lombok.Getter;
-import lombok.Setter;
 import ru.neirojet.ast.NJNode;
 import ru.neirojet.ast.Token;
 import ru.neirojet.ast.TokenType;
@@ -12,14 +10,11 @@ import java.util.LinkedList;
 /**
  * Created by icetsuk on 13.01.17.
  */
-@Setter
-@Getter
 public class Operator  {
 
     private String text;
     private TokenType type;
     private Integer level;
-    private Token[] tokensInvolved;
 
     public Operator(String text, TokenType type, Integer level) {
         this.text = text;
@@ -85,5 +80,27 @@ public class Operator  {
         return result;
     }
 
+    public String getText() {
+        return text;
+    }
 
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public TokenType getType() {
+        return type;
+    }
+
+    public void setType(TokenType type) {
+        this.type = type;
+    }
+
+    public Integer getLevel() {
+        return level;
+    }
+
+    public void setLevel(Integer level) {
+        this.level = level;
+    }
 }

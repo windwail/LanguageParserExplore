@@ -1,14 +1,10 @@
 package ru.neirojet.ast;
 
-import lombok.Getter;
-import lombok.Setter;
 import ru.neirojet.operators.Operator;
 
 /**
  * Created by icetsuk on 13.01.17.
  */
-@Getter
-@Setter
 public class Token {
     public TokenType type;
     public String text;
@@ -39,5 +35,37 @@ public class Token {
         return "{"
                 + text +
                 '}';
+    }
+
+    public TokenType getType() {
+        return type;
+    }
+
+    public void setType(TokenType type) {
+        this.type = type;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public boolean isOperator() {
+        return isOperator;
+    }
+
+    public void setOperator(boolean operator) {
+        isOperator = operator;
+    }
+
+    public Operator getOperator() {
+        return operator;
+    }
+
+    public void setOperator(Operator operator) {
+        this.operator = operator;
     }
 }

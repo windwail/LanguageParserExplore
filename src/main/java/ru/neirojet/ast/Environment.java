@@ -1,7 +1,5 @@
 package ru.neirojet.ast;
 
-import lombok.Getter;
-import lombok.Setter;
 import ru.neirojet.variables.Variable;
 import ru.neirojet.variables.VariableType;
 
@@ -12,8 +10,6 @@ import java.util.HashMap;
  * Created by icetusk on 14.01.17.
  */
 
-@Getter
-@Setter
 public class Environment {
 
     private Environment() {
@@ -104,4 +100,11 @@ public class Environment {
         return null;
     }
 
+    public HashMap<String, Variable> getVars() {
+        return vars;
+    }
+
+    public void setVars(HashMap<String, Variable> vars) {
+        this.vars = vars;
+    }
 }
