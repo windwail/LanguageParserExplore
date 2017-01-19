@@ -6,7 +6,6 @@ import ru.neirojet.operators.RightToLeftOperator;
 import ru.neirojet.variables.Variable;
 import ru.neirojet.variables.VariableType;
 
-import javax.print.DocFlavor;
 import java.math.BigDecimal;
 import java.util.LinkedList;
 
