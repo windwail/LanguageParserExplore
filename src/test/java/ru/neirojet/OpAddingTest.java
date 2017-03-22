@@ -27,7 +27,7 @@ public class OpAddingTest extends NeirojetTest {
 
         System.out.println("yyyya");
 
-        //assertTrue(env.get("test").getValue().equals(new BigDecimal("0")));
+        assertTrue(env.get("test").getValue().equals(new BigDecimal("0")));
     }
 
 }
